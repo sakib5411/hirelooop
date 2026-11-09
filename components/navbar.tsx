@@ -44,14 +44,14 @@ function Actions() {
       <Button
         variant="ghost"
         nativeButton={false}
-        render={<Link href="#" />}
+        render={<Link href="/sign-in" />}
         className="h-9 rounded-[8px] px-4 text-lg font-bold text-[#645bff] hover:bg-white/5 hover:text-[#645bff] dark:hover:bg-white/5"
       >
         Sign In
       </Button>
       <Button
         nativeButton={false}
-        render={<Link href="#" />}
+        render={<Link href="/sign-up" />}
         className="h-[52px] rounded-[8px] border border-[#090a15] bg-[#5c53fe] px-4 text-lg font-medium text-[#ededef] hover:bg-[#6a62ff]"
       >
         Get Started
@@ -135,7 +135,7 @@ export function Navbar() {
           <div className="mt-2 flex flex-col gap-2">
             <Button
               nativeButton={false}
-              render={<Link href="#" />}
+              render={<Link href="/sign-up" />}
               className="h-11 rounded-[8px] border border-[#090a15] bg-[#5c53fe] text-lg font-medium text-[#ededef] hover:bg-[#6a62ff]"
             >
               Get Started
@@ -143,7 +143,7 @@ export function Navbar() {
             <Button
               variant="ghost"
               nativeButton={false}
-              render={<Link href="#" />}
+              render={<Link href="/sign-in" />}
               className="h-10 rounded-[8px] text-lg font-bold text-[#645bff] hover:bg-white/5 hover:text-[#645bff] dark:hover:bg-white/5"
             >
               Sign In
