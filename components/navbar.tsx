@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react"
 import logo from "@/app/assets/logo.png"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {useSession, signOut} from '@/lib/auth-client'
 
 const links = [
   { label: "Browse Jobs", href: "#", active: true },
@@ -39,6 +40,37 @@ function NavLink({ label, href, active }: (typeof links)[number]) {
 }
 
 function Actions() {
+  const { data: session, isPending } = useSession()
+
+  async function handleSignOut() {
+    await signOut()
+  }
+
+  if (isPending) {
+    // Avoid layout shift / flicker while the session is being resolved
+    return <div className="h-9 w-40" aria-hidden="true" />
+  }
+
+  if (session) {
+    return (
+      <>
+        <span
+          className="hidden truncate text-sm text-[#ededef]/70 lg:block"
+          title={session.user.email}
+        >
+          {session.user.name || session.user.email}
+        </span>
+        <Button
+          variant="ghost"
+          className="h-[38px] rounded-[8px] bg-transparent px-4 text-lg font-semibold text-[#645bff] hover:bg-white/5 hover:text-[#645bff] dark:hover:bg-white/5"
+          onClick={handleSignOut}
+        >
+          Sign Out
+        </Button>
+      </>
+    )
+  }
+
   return (
     <>
       <Button
@@ -54,7 +86,7 @@ function Actions() {
         render={<Link href="/sign-up" />}
         className="h-[52px] rounded-[8px] border border-[#090a15] bg-[#5c53fe] px-4 text-lg font-medium text-[#ededef] hover:bg-[#6a62ff]"
       >
-        Get Started
+        Sign-Up
       </Button>
     </>
   )
@@ -133,21 +165,7 @@ export function Navbar() {
           ))}
           <span aria-hidden="true" className="h-px bg-[#a8a8a8]/40" />
           <div className="mt-2 flex flex-col gap-2">
-            <Button
-              nativeButton={false}
-              render={<Link href="/sign-up" />}
-              className="h-11 rounded-[8px] border border-[#090a15] bg-[#5c53fe] text-lg font-medium text-[#ededef] hover:bg-[#6a62ff]"
-            >
-              Get Started
-            </Button>
-            <Button
-              variant="ghost"
-              nativeButton={false}
-              render={<Link href="/sign-in" />}
-              className="h-10 rounded-[8px] text-lg font-bold text-[#645bff] hover:bg-white/5 hover:text-[#645bff] dark:hover:bg-white/5"
-            >
-              Sign In
-            </Button>
+            <Actions />
           </div>
         </nav>
       )}

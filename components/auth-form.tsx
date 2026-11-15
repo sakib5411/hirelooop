@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
 type Mode = "signin" | "signup"
@@ -42,21 +44,48 @@ function Field({
 }
 
 export function AuthForm({ mode }: { mode: Mode }) {
+  const router = useRouter()
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState<string | null>(null)
 
   const isSignIn = mode === "signin"
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = e.currentTarget
     const data = Object.fromEntries(new FormData(form).entries())
-    // Temporary handler — real auth integration happens later
-    console.log(`[Auth] ${mode} form data:`, data)
-    setSubmitted(
-      isSignIn
-        ? `Signed in as ${String(data.email ?? "")}`
-        : `Account created for ${String(data.email ?? "")}`
-    )
+    const email = String(data.email ?? "")
+    const password = String(data.password ?? "")
+
+    setPending(true)
+    setError(null)
+
+    try {
+      if (isSignIn) {
+        const { error } = await authClient.signIn.email({ email, password })
+        if (error) {
+          setError(error.message ?? "Sign in failed. Please try again.")
+          return
+        }
+        setSubmitted(`Signed in as ${email}. Redirecting...`)
+        router.push("/dashboard/seeker")
+      } else {
+        const { error } = await authClient.signUp.email({
+          email,
+          password,
+          name: String(data.name ?? ""),
+        })
+        if (error) {
+          setError(error.message ?? "Sign up failed. Please try again.")
+          return
+        }
+        setSubmitted(`Account created for ${email}. Redirecting...`)
+        router.push("/dashboard/seeker")
+      }
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -165,11 +194,27 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
             <button
               type="submit"
-              className="mt-2 flex h-12 w-full items-center justify-center rounded-lg bg-[#5c53fe] text-base font-semibold text-white transition-colors hover:bg-[#6a62ff]"
+              disabled={pending}
+              className="mt-2 flex h-12 w-full items-center justify-center rounded-lg bg-[#5c53fe] text-base font-semibold text-white transition-colors hover:bg-[#6a62ff] disabled:pointer-events-none disabled:opacity-60"
             >
-              {isSignIn ? "Sign In" : "Create Account"}
+              {pending
+                ? isSignIn
+                  ? "Signing in..."
+                  : "Creating account..."
+                : isSignIn
+                  ? "Sign In"
+                  : "Create Account"}
             </button>
           </form>
+
+          {error && (
+            <p
+              role="alert"
+              className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            >
+              {error}
+            </p>
+          )}
 
           {submitted && (
             <p
