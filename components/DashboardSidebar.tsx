@@ -14,6 +14,7 @@ import {
   Wallet,
   Settings,
   LogOut,
+  Plus,
 } from "lucide-react"
 
 import logo from "@/app/assets/logo.png"
@@ -43,7 +44,7 @@ const menuItemsByRole = {
   ],
   recruiter: [
     { id: "dashboard", name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutDashboard },
-    { id: "company", name: "My Company", url: "/dashboard/recruiter/my-company", icon: Building2 },
+    { id: "add-job", name: "Add Job", url: "/dashboard/recruiter/add-job", icon: Plus },
     { id: "jobs", name: "Manage Jobs", url: "/dashboard/recruiter/manage-jobs", icon: Briefcase },
     { id: "applications", name: "Applications", url: "/dashboard/recruiter/applications", icon: FileText },
     { id: "settings", name: "Settings", url: "/dashboard/recruiter/settings", icon: Settings },

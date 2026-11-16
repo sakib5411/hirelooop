@@ -1,10 +1,15 @@
-import { Geist, Geist_Mono, Manrope, Space_Mono } from "next/font/google"
+import { Geist, Geist_Mono, Inter, Manrope, Space_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -37,7 +42,8 @@ export default function RootLayout({
         manrope.variable,
         spaceMono.variable,
         "font-sans",
-        geist.variable
+        geist.variable,
+        inter.variable
       )}
     >
       <body>
